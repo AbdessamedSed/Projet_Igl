@@ -11,4 +11,15 @@ class ContactSerializer(serializers.ModelSerializer):
            'commune',
            'numero_telephone'
         ]
-
+class ContactDetailSerializer(serializers.ModelSerializer):
+    class Meta :
+        model=Contact
+        fields =[
+           'nom',
+           'email',
+           'adresse',
+           'wilaya',
+           'commune',
+           'numero_telephone',
+           'pk'
+        ]

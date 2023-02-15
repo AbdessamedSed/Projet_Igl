@@ -1,131 +1,82 @@
+import React from "react";
+import Navbar from "./Components/Navbar";
+import "./style.css";
+import Home from "./pages/HomeCopy";
 
-import {Route, BrowserRouter,Routes} from 'react-router-dom';
-import Home from './containers/Home'
-import Activate from './containers/Activate';
-import Signup from './containers/Signup';
-import Login from './containers/Login';
-import Google from './containers/Google';
-import ResetPassword from './containers/ResetPassword';
-import ResetPasswordConfirm from './containers/ResetPasswordConfirm';
-import Layout from './hocs/Layout'
-import {Provider} from 'react-redux';
-import store from './store'
-function App(){
-  return(
-  <Provider store={store}>
-     <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route   path="/" element={<Home/>}/>
-          <Route   path="/login" element={<Login/>}/>
-          <Route   path="/signup" element={<Signup/>}/>
-          <Route   path="/reset-password" element={<ResetPassword/>}/>
-          <Route   path='/google' element={<Google/>} />
-          <Route   path="/password/reset/confirm/:uid/:token" element={<ResetPasswordConfirm/>}/>
-          <Route   path="/activate/:uid/:token" element={<Activate/>}/>
-        </Routes>
-      </Layout>
-    </BrowserRouter>
-  </Provider>
-  );
-}
-export default App;
-/*function App() {
-  const [articles, setArticles] = useState([])
-  const [editArticle, setEditArticle] = useState('')
-  const [token, setToken, removeToken] = useCookies(['mytoken'])
-  let navigate = useNavigate()
+import Account from "./pages/Account";
+import { Route, Routes, BrowserRouter, Router } from "react-router-dom";
+import AccountInfo from "./pages/AccountInfo";
+import MyAds from "./pages/MyAds";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ResetPassword from "./pages/ResetPassword";
+import Google from "./pages/Google";
+import ResetPasswordConfirm from "./pages/ResetPasswordConfirm";
+import Activate from "./pages/Activate";
+import Accueil from "./pages/Accueil";
+import store from "./store";
+import { Provider } from "react-redux";
+import AdDet from "./Components/AdDet";
+import Layout from "./hocs/Layout";
+import Publier from "./Components/Publier";
+import Acount from "./Components/Acount";
+import Aide from "./my_Part/Pages/Aide";
+import GestionCompte from "./my_Part/Component/gestionCompte";
+import AdminSection from "./my_Part/Component/admin";
+import GestionAds from "./my_Part/Component/gestionAds";
+import Securite from "./my_Part/Component/securite";
+import SignalerProblem from "./my_Part/Component/signalerProblem";
+import ChatApp from "./my_Part/Component/chatApp";
+import ErrorPage from "./my_Part/Pages/Errorpage";
+import About from "./my_Part/Pages/About";
 
-
-  useEffect(() =>{
-    fetch('http://localhost:8000/api/articles/', {
-      method:'GET',
-      headers:{
-        'Content-Type': 'application/json',
-        'Authorization': 'eb2911dd5662ee883fdbe05a43f94dd240440f6d'
-      }
-    })
-    .then(resp => resp.json())
-    .then(resp => setArticles(resp))
-    .catch(error => console.log(error))
-
-  }, [])
-
-  const editBtn = (article) =>{
-    setEditArticle(article)
-  }
-
-  const updatedInformation = (article) => {
-    const new_article = articles.map(myarticle => {
-      if(myarticle.id === article.id){
-        return article
-      }else{
-        return myarticle
-      }
-    })
-    setArticles(new_article)
-  }
-
-  const articleForm = () =>{
-    setEditArticle({title:'', description:''})
-  }
-
-  const insertedInformation = (article) => {
-   const new_articles = [...articles,article]
-   setArticles(new_articles)
-  }
-
-  const deleteBtn = (article) =>{
-    const new_article = articles.filter(myarticle => {
-      if(myarticle.id === article.id){
-        return false
-      }
-      
-      return true
-    })
-    setArticles(new_article)
-  }
-
-
-  useEffect(()=> {
-    var user_token = token['mytoken']
-    console.log('User token is',user_token)
-    if(String(user_token) === 'undefined'){
-        navigate('/')
-    }else{
-      navigate('/articles')
+function App() {
+  /*const [show , setShow] = useState(false);
+  function handleClick(){
+    if(!show){
+      setShow(() => {
+        return (!show);
+      })
     }
-}, [token])
-
-
-const logoutBtn = () => {
-  removeToken(['mytoken'])
-
-}
- 
-
-
+  }*/
   return (
-    <div className="App">
-
-   <NavBar />
-   <br />
-
-   <div className="row">
-     <div className="col">
-       <button className="btn btn-primary" onClick={articleForm}>Create Post</button>
-
-     </div>
-
-   </div>
-
-
-
-    <ArticleList articles={articles} editBtn ={editBtn}  deleteBtn ={deleteBtn}/>
-    <Form  article = {editArticle} updatedInformation= {updatedInformation} insertedInformation= {insertedInformation}/>
-  
-    </div>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Accueil />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/aide/confiance et securite" element={<Securite />} />
+            <Route path="/aide/problem" element={<SignalerProblem />} />
+            <Route path="/compte/Admin" element={<AdminSection />} />
+            <Route path="/compte/mes_messages" element={<ChatApp />} />
+            <Route path="/error" element={<ErrorPage />} />
+            <Route path="/aide" element={<Aide />} />
+            <Route path="/compte" element={<Account />} />
+            <Route
+              path="/compte/infopersonnelles"
+              element={<AccountInfo />}
+            ></Route>
+            <Route path="/compte/mesannonces" element={<MyAds />}></Route>
+            <Route
+              path="/compte/mesannonces/annonce/:annonceId"
+              element={<AdDet />}
+            ></Route>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/google" element={<Google />} />
+            <Route
+              path="/password/reset/confirm/:uid/:token"
+              element={<ResetPasswordConfirm />}
+            />
+            <Route path="/activate/:uid/:token" element={<Activate />} />
+            <Route path="/publier" element={<Publier />}></Route>
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </Provider>
   );
 }
-*/
 
+export default App;

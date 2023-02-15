@@ -10,39 +10,28 @@ from django.shortcuts import get_object_or_404
 from rest_framework import permissions
 from rest_framework.parsers import MultiPartParser, FormParser
 from .models import UserAccount
-from .serializers import UserCreateSerializer , UploadProfileImageSerializer ,UserSerializer ,UpdateProfileSerializer
+from .serializers import *
 from api.annonces.custom_renderers import PNGRenderer
 from api.contacts.models import Contact
 from api.localisation.models import Wilaya,Commune
 
 class RegisterView(APIView):
   def post(self, request):
+    print("welcome 1")
     data = request.data
-
     serializer = UserCreateSerializer(data=data)
-
     if not serializer.is_valid():
       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     user = serializer.create(serializer.validated_data)
-    user = UserSerializer(user)
-
+    user = ProfileSerializer(user)
     return Response(user.data, status=status.HTTP_201_CREATED)
-
-class RetrieveUserView(APIView):
-  permission_classes = [permissions.IsAuthenticated]
-
-  def get(self, request):
-    user = request.user
-    user = UserSerializer(user)
-
-    return Response(user.data, status=status.HTTP_200_OK)
 ##############################################################
 
 class ImageProfileUpdateAPIView(generics.UpdateAPIView):
   serializer_class=UploadProfileImageSerializer
   queryset=UserAccount.objects.all()
   parser_classes = (MultiPartParser, FormParser)
+  permission_classes = [permissions.IsAuthenticated]
   def update(self,request,*args,**kwargs):
     print(f'image_url : {request.data.get("image_url")}')
     data_to_change={'profile_image':request.data.get("image_url")}
@@ -52,31 +41,84 @@ class ImageProfileUpdateAPIView(generics.UpdateAPIView):
     return Response(serializer.data)
 
 ###############################################################
-
+class RetrieveUserView(APIView):
+  permission_classes = [permissions.IsAuthenticated]
+  def get(self, request):
+    print("welcome 2")
+    user = request.user
+    user = ProfileSerializer(user)
+    print(user)
+    return Response(user.data, status=status.HTTP_200_OK)
+###################################
 class ProfileUpdateAPIView(generics.UpdateAPIView):
-  serializer_class=UpdateProfileSerializer
   def update(self,request,*args,**kwargs):
+    print("welcome 3")
     data=request.data
-    data_to_change={
-      'nom':data.get("nom"),
-      'prenom':data.get("prenom"),
-      'email':data.get('email'),
-    }
-    serializer=self.serializer_class(request.user,data=data_to_change,partial=True)
-    if serializer.is_valid():
-      self.perform_update(serializer)
-    ########create a new contact ###########
-    wilaya=Wilaya.objects.get(pk=data.get('wilaya'))
-    commune=Commune.objects.get(pk=data.get('commune'))
-    contact=Contact(utilisateur_id=request.user,nom=data.get("nom")+' '+data.get("prenom"),adresse=data.get('adresse'),commune=commune,
-                wilaya=wilaya,numero_telephone=data.get("numero_telephone"))
-    contact.save()
+    ###################
+    numero_telephone=data.get('numero_telephone')
+    date_naissance=data.get('date_naissance')
+    nom=data.get("nom")
+    prenom=data.get("prenom")
+    email=data.get('email')
+    #######################################
+    modification=0
+    user=UserAccount.objects.get(pk=request.user.pk)
+    if nom!="":
+      if nom!=user.nom :
+         #print("modifier nom")
+         user.nom=nom
+         modification=1
+
+    if prenom!="":
+      if prenom!=user.prenom :
+         #print("modifier prenom")
+         user.prenom=prenom
+         modification=1
+
+    if email!="":
+      if email!=user.email :
+         #print("modifier email")
+         user.email=email
+         modification=1
+    
+    if date_naissance!="" :
+      print(str(user.date_naissance))
+      if str(user.date_naissance)!=date_naissance:
+         #print("modifier date naissance")
+         user.date_naissance=date_naissance
+         modification=1
+        
+    if numero_telephone!="":
+      if user.numero_telephone!=numero_telephone :
+         #print("modifier numéro telphone")
+         user.numero_telephone=numero_telephone
+         modification=1
+    wilaya=data.get('wilaya')
+    commune=data.get('commune')
+    print(wilaya)
+    print(commune)
+
+    user.wilaya=Wilaya.objects.get(pk=wilaya)
+    user.commune=Commune.objects.get(pk=commune)
+    modification=1
+    user.save()##updating user model
+    ######################################
+    if modification==1 :
+       print("\n")
+       print("creer nouveau contact")
+       print("\n")
+       contact=Contact(utilisateur_id=user.pk, email=user.email , nom=user.nom+" "+user.prenom ,
+       commune=user.commune,wilaya=user.wilaya,numero_telephone=data.get("numero_telephone"))
+       contact.save()
+    serializer=ProfileSerializer(user)
+    print(serializer.data)
     return Response(serializer.data)
 ###############################################################
 
 class GetImageProfileAPIView(generics.CreateAPIView):
     renderer_classes = [PNGRenderer]    
     def get(self , *args, **kwargs):
+        print("welcome 5")
         queryset = UserAccount.objects.filter(pk=self.kwargs['id'])[0].profile_image
         data = queryset
         print("image fetched ")

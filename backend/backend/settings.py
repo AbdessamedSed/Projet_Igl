@@ -42,13 +42,14 @@ INSTALLED_APPS = [
     'api.annonces',
     'api.localisation',
     'api.contacts',
+    'api.messageoffre',
 
     ###### test django-all-auth ##########################
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
+    #'django.contrib.sites',
+    #'allauth',
+    #'allauth.account',
+    #'allauth.socialaccount',
+    #'allauth.socialaccount.providers.google',
 
 ]
 
@@ -110,8 +111,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT=587
 EMAIL_HOST_USER = 'dzestatesd@gmail.com'
-EMAIL_HOST_PASSWORD= 'lxeeruhehcaaxugd'
+EMAIL_HOST_PASSWORD= 'oiwxbtptwlucfjat'
 EMAIL_USE_TLS=True
+#EMAIL_HOST_USER = 'ka_seddiki@esi.dz'
+#EMAIL_HOST_PASSWORD= 'prndrsjuvfjgflck'
+
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -159,13 +163,13 @@ REST_AUTH_SERIALIZERS = {
 ########################################################
 
 
-AUTHENTICATION_BACKENDS = (
+#AUTHENTICATION_BACKENDS = (
     #'social_core.backends.google.GoogleOAuth2',
     #'social_core.backends.google.GoogleOpenId',
     #'social_core.backends.facebook.FacebookOAuth2',
-    'allauth.account.auth_backends.AuthenticationBackend',
-    'django.contrib.auth.backends.ModelBackend'
-)
+    #'allauth.account.auth_backends.AuthenticationBackend',
+    #'django.contrib.auth.backends.ModelBackend'
+#)
 SITE_ID = 1
 
 # Provider specific settings
@@ -196,8 +200,8 @@ SOCIAL_AUTH_RAISE_EXCEPTIONS = True
 #############################################################
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES':('JWT',),
-    'ACCESS_TOKEN_LIFETIME':timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME':timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME':timedelta(minutes=2000),
+    'REFRESH_TOKEN_LIFETIME':timedelta(minutes=2000),
     'AUTH_TOKEN_CLASSES': (
         'rest_framework_simplejwt.tokens.AccessToken',
     )

@@ -4,6 +4,7 @@ urlpatterns =[
 
     path('list/',views.ContactListAPView.as_view()),
     path('create/',views.ContactCreateAPView.as_view()),
+    path('<id>/',views.ContactDetailAPIView.as_view()),
 
 
 ]
